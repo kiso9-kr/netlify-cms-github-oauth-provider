@@ -1,7 +1,8 @@
+
 const REQUIRED_ORIGIN_PATTERN = 
   /^((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,})(\,((\*|([\w_-]{2,}))\.)*(([\w_-]{2,})\.)+(\w{2,}))*$/
 
-if (!process.env.ORIGINS.match(REQUIRED_ORIGIN_PATTERN)) {
+if (!(process.env.ORIGINS || "https://kiso9.kr").match(REQUIRED_ORIGIN_PATTERN)) {
   throw new Error('process.env.ORIGINS MUST be comma separated list \
     of origins that login can succeed on.')
 }
@@ -34,14 +35,3 @@ module.exports = (oauthProvider, message, content) => `
       return;
     }
     // send message to main window with da app
-    window.opener.postMessage(
-      'authorization:${oauthProvider}:${message}:${JSON.stringify(content)}',
-      e.origin
-    )
-  }
-  window.addEventListener("message", recieveMessage, false)
-  // Start handshare with parent
-  console.log("Sending message: %o", "${oauthProvider}")
-  window.opener.postMessage("authorizing:${oauthProvider}", "*")
-})()
-</script>`
